@@ -16,11 +16,21 @@ export const createDoctor = async (req: Request, res: Response) => {
     try {
         console.log('Received create doctor request:', req.body);
         const data = doctorSchema.parse(req.body);
-        const doctor = await prisma.doctor.create({ data });
-        res.json(doctor);
-    } catch (error) {
-        console.error('Validation error:', error);
-        res.status(400).json({ error: 'Invalid input', details: error });
+        try {
+            const doctor = await prisma.doctor.create({ data });
+            res.json(doctor);
+        } catch (dbError: any) {
+            console.error('Database error:', dbError);
+            res.status(500).json({ error: 'Database error', details: dbError.message });
+        }
+    } catch (error: any) {
+        if (error instanceof z.ZodError) {
+            console.error('Validation error:', error.errors);
+            res.status(400).json({ error: 'Invalid input', details: error.errors });
+        } else {
+            console.error('Unexpected error:', error);
+            res.status(500).json({ error: 'Internal Server Error', details: error.message });
+        }
     }
 };
 
