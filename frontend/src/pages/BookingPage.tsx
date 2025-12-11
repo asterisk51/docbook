@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import api from '../services/api';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../context/AuthContext';
-import { format, parseISO, isSameDay } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Calendar, Clock, ChevronRight } from 'lucide-react';
 
 export default function BookingPage() {
@@ -38,9 +38,9 @@ export default function BookingPage() {
 
             // Auto-select first date if available
             if (res.data.length > 0) {
-                const dates = Array.from(new Set(res.data.map((s: any) =>
+                const dates: string[] = Array.from(new Set(res.data.map((s: any) =>
                     format(parseISO(s.time), 'yyyy-MM-dd')
-                ))).sort();
+                ))).sort() as string[];
                 if (dates.length > 0) setSelectedDate(dates[0]);
             }
         } catch (error) {
@@ -168,8 +168,8 @@ export default function BookingPage() {
                                                             key={dateStr}
                                                             onClick={() => setSelectedDate(dateStr)}
                                                             className={`flex flex-col items-center justify-center min-w-[80px] p-3 rounded-xl border transition-all ${isSelected
-                                                                    ? 'bg-teal-600 text-white border-teal-600 shadow-md ring-2 ring-teal-200'
-                                                                    : 'bg-white text-slate-600 border-slate-200 hover:border-teal-300 hover:bg-teal-50'
+                                                                ? 'bg-teal-600 text-white border-teal-600 shadow-md ring-2 ring-teal-200'
+                                                                : 'bg-white text-slate-600 border-slate-200 hover:border-teal-300 hover:bg-teal-50'
                                                                 }`}
                                                         >
                                                             <span className="text-xs font-medium opacity-80">{format(date, 'EEE')}</span>
